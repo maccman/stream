@@ -33,7 +33,7 @@ class Stream
       streams = streams.reject {|s| s.id == except_id }
     end
 
-    streams.each {|c| c.publish(channel, message) }
+    streams.each {|c| c.publish(:message, message) }
   end
 
   attr_reader :out, :id
