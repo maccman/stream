@@ -95,6 +95,11 @@ class Stream
   end
 end
 
+head '/subscribe/?:channel?' do
+  headers['Access-Control-Allow-Origin'] = '*'
+  200
+end
+
 get '/subscribe/?:channel?', :provides => 'text/event-stream' do
   error 402 unless Stream.enabled?
 
