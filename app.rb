@@ -23,7 +23,7 @@ class Stream
 
   def self.disable!
     @enabled = false
-    streams.each(&:close!)
+    streams.values.flatten.each(&:close!)
   end
 
   def self.publish(channel, message, options = {})
