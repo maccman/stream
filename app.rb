@@ -3,7 +3,11 @@ require 'bundler'
 
 Bundler.require
 
+require 'json'
+
 ENV['REDIS_URL'] ||= ENV['REDISCLOUD_URL']
+
+Thread.abort_on_exception = true
 
 class Stream
   def self.streams
@@ -29,7 +33,7 @@ class Stream
       streams = streams.reject {|s| s.id == except_id }
     end
 
-    streams.each {|c| c.publish(message) }
+    streams.each {|c| c.publish(channel, message) }
   end
 
   attr_reader :out, :id
@@ -61,7 +65,8 @@ class Stream
     end
   end
 
-  def publish(message)
+  def publish(event, message)
+    self << "event: #{event}\n"
     self << "data: #{message}\n\n"
   end
 
@@ -81,11 +86,11 @@ class Stream
 
   def keepalive
     return close! if keepalive_timeout?
-    publish(:keepalive)
+    publish(:keepalive, '')
   end
 
   def setup
-    publish(:setup, id: id)
+    publish(:setup, id)
     self << "retry: 5000\n"
   end
 end
