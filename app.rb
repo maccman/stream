@@ -95,8 +95,11 @@ class Stream
   end
 end
 
-head '/subscribe/?:channel?' do
+before do
   headers['Access-Control-Allow-Origin'] = '*'
+end
+
+head '/subscribe/?:channel?' do
   200
 end
 
